@@ -29,6 +29,34 @@ def create_user():
 
     return jsonify({"success":"User created successfully"}), 201
 
+
+# update user - block/unblock user, change username, email, admin status
+@user_bp.route("/users/<user_id>", methods=["PATCH"])
+def update_user(user_id):  
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+  
+    username = data.get("username",user.username)
+    email = data.get("email", user.email)
+    is_admin = data.get("is_admin", user.is_admin)
+    is_blocked = data.get("is_blocked", user.is_blocked)
+
+    
+    user.username = username
+    user.email = email
+    user.is_admin = is_admin
+    user.is_blocked = is_blocked
+
+    db.session.commit()
+
+    return jsonify({"success": "User updated successfully"}), 200 
+    
+
+
 # get user by id
 @user_bp.route("/users/<user_id>", methods=["GET"])
 def fetch_user_by_id(user_id):
@@ -43,7 +71,7 @@ def fetch_user_by_id(user_id):
         "email": user.email,
         "is_admin": user.is_admin,
         "is_blocked": user.is_blocked,
-        "created_at": user.created_at
+        "created_at": user.created_at,
     }
     return jsonify(user_data), 200
 
@@ -63,6 +91,7 @@ def fetch_all_users():
             "created_at": user.created_at
         }
         user_list.append(user_data)
+        
     return jsonify(user_list), 200
 
 # delete user

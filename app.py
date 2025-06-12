@@ -17,7 +17,7 @@ from views import *
 
 app.register_blueprint(user_bp)
 app.register_blueprint(question_bp)
-# app.register_blueprint(answer_bp)
+app.register_blueprint(answer_bp)
 # app.register_blueprint(vote_bp)
 
 
