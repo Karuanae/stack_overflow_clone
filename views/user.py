@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify, Blueprint
 from models import db, User
 
+# Importing Flask-Mail for email functionalities
+from flask_mail import Message
+from app import app, mail
+
+
 user_bp = Blueprint("user_bp", __name__)
+
 
 # registering user
 @user_bp.route("/users", methods=["POST"])
@@ -10,6 +16,7 @@ def create_user():
 
     username = data.get("username")
     email = data.get("email")
+    
 
     if not username or not email:
         return jsonify({"error": "Username and email are required"}), 400
@@ -25,9 +32,22 @@ def create_user():
 
     new_user = User(username=username, email=email)
     db.session.add(new_user)
-    db.session.commit()
 
-    return jsonify({"success":"User created successfully"}), 201
+    # Sending a welcome email to the new user
+    try:
+        msg = Message(subject="Welcome to StackOverflow Clone",
+        recipients=[email],
+        sender=app.config['MAIL_DEFAULT_SENDER'],
+        body=f"Hello {username},\n\nThank you for registering on StackOverflow Clone. We are excited to have you on board!\n\nBest regards,\nStackOverflow Clone Team")
+        mail.send(msg)        
+        # Commit the new user to the database after sending the email
+        db.session.commit()
+        return jsonify({"success":"User created successfully"}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to regsiter/send welcome email"}), 400
+
 
 
 # update user - block/unblock user, change username, email, admin status
@@ -51,10 +71,21 @@ def update_user(user_id):
     user.is_admin = is_admin
     user.is_blocked = is_blocked
 
-    db.session.commit()
+    #  send an email when user updates their information
+    try:
+        msg = Message(subject="Alert! Profile Update",
+        recipients=[email],
+        sender=app.config['MAIL_DEFAULT_SENDER'],
+        body=f"Hello {user.username},\n\nYour profile has been updated successfully on StackOverflow Clone.\n\nBest regards,\nStackOverflow Clone Team")
+        mail.send(msg)        
+        # Commit the new user to the database after sending the email
+        db.session.commit()
+        return jsonify({"success":"User updated successfully"}), 201
 
-    return jsonify({"success": "User updated successfully"}), 200 
-    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to regsiter/send welcome email"}), 400
+   
 
 
 # get user by id

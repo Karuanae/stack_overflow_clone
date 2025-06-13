@@ -27,6 +27,7 @@ def create_question():
     new_question = Question(title=title, body=body, tags=tags, user_id=user_id)
     
     db.session.add(new_question)
+    
     db.session.commit()
     return jsonify({"success": "Question created successfully"}), 201
 
