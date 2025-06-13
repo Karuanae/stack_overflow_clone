@@ -17,9 +17,9 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config["MAIL_USE_SSL"] = False
-app.config['MAIL_USERNAME'] = 'kelvinapp2025@gmail.com'
-app.config['MAIL_PASSWORD'] = 'gokf ihrj wjmb bxxw'
-app.config['MAIL_DEFAULT_SENDER'] = 'kelvinapp2025@gmail.com'
+app.config['MAIL_USERNAME'] = '' # Replace with your actual email
+app.config['MAIL_PASSWORD'] = 'your_password_here'  # Replace with your App actual password
+app.config['MAIL_DEFAULT_SENDER'] = 'yourrmail@gmail.com'
 
 mail = Mail(app)
 # Register Blueprints
