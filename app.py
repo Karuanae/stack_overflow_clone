@@ -1,7 +1,9 @@
+from datetime import timedelta
 from flask import Flask, request, jsonify
 from models import db, User
 from flask_migrate import Migrate
 from flask_mail import Mail
+from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 
@@ -17,14 +19,21 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config["MAIL_USE_SSL"] = False
-app.config['MAIL_USERNAME'] = '' # Replace with your actual email
-app.config['MAIL_PASSWORD'] = 'your_password_here'  # Replace with your App actual password
+app.config['MAIL_USERNAME'] = 'kelvinapp2025@gmail.com'
+app.config['MAIL_PASSWORD'] = 'rvkh mymz ttzx rrqb' 
 app.config['MAIL_DEFAULT_SENDER'] = 'yourrmail@gmail.com'
 
 mail = Mail(app)
+
+# JWT
+app.config["JWT_SECRET_KEY"] = "sjusefvyilgfvksbhvfiknhalvufn"  
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
+jwt = JWTManager(app)
+jwt.init_app(app)
+
 # Register Blueprints
 from views import *
-
+app.register_blueprint(auth_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(question_bp)
 app.register_blueprint(answer_bp)
@@ -35,3 +44,7 @@ app.register_blueprint(vote_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
