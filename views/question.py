@@ -1,17 +1,18 @@
 from flask import Flask, request, jsonify, Blueprint
 from models import db, User, Question
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 question_bp = Blueprint("question_bp", __name__)
 
 # Create a new question
 @question_bp.route('/questions', methods=['POST'])
+@jwt_required()
 def create_question():
     data = request.get_json()
 
     title = data.get('title')
     body = data.get('body')
     tags = data.get('tags')
-    user_id = data.get('user_id') 
+    user_id = get_jwt_identity()
 
     if not title or not body or not tags:
         return jsonify({"error": "Title, body, and tags are required"}), 400

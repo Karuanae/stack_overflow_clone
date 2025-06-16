@@ -21,6 +21,12 @@ class User(db.Model):
     answers = db.relationship('Answer', backref='user', lazy=True)
     votes = db.relationship('Vote', backref='user', lazy=True)
 
+# TokenBlocklist is used to store JWT tokens that have been revoked or are no longer valid.
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+
 
 class Question(db.Model):
     __tablename__ = 'questions'

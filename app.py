@@ -1,6 +1,6 @@
 from datetime import timedelta
 from flask import Flask, request, jsonify
-from models import db, User
+from models import db, TokenBlocklist
 from flask_migrate import Migrate
 from flask_mail import Mail
 from flask_jwt_extended import JWTManager
@@ -28,6 +28,10 @@ mail = Mail(app)
 # JWT
 app.config["JWT_SECRET_KEY"] = "sjusefvyilgfvksbhvfiknhalvufn"  
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
+
+# test
+app.config["JWT_VERIFY_SUB"] = False
+
 jwt = JWTManager(app)
 jwt.init_app(app)
 
@@ -39,6 +43,13 @@ app.register_blueprint(question_bp)
 app.register_blueprint(answer_bp)
 app.register_blueprint(vote_bp)
 
+# Callback function to check if a JWT exists in the database blocklist
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+
+    return token is not None
 
 
 
