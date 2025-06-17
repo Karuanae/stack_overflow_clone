@@ -81,34 +81,74 @@ def get_question(id):
         }
     }), 200
 
-# update a question - also used to approve and disapprove questions
+# update a question 
 @question_bp.route('/questions/<int:id>', methods=['PATCH'])
+@jwt_required()
 def update_question(id):
+    current_user_id = get_jwt_identity()
+
+    question = Question.query.get(id)
+    if not question:
+        return jsonify({"error": "Question not found"}), 404
+
+    if question.user.id != current_user_id:
+        return jsonify({"error": "You are not authorized to update this question"}), 403
+    
+    data = request.get_json()
+    title = data.get('title', question.title)
+    body = data.get('body', question.body)
+    tags = data.get('tags', question.tags)
+    is_approved = question.is_approved
+
+    question.title = title
+    question.body = body
+    question.tags = tags
+    question.is_approved = is_approved
+
+
+
+    db.session.commit()
+    return jsonify({"success": "Question updated successfully"}), 200
+
+# ROUTE FOR APPROVING A QUESTION BY ADMIN
+@question_bp.route('/questions/<int:id>/approve', methods=['PATCH'])
+@jwt_required()
+def approve_dissapprove_question(id):
+    current_user_id = get_jwt_identity()
+    current_user = User.query.get(current_user_id)
+    
+    if not current_user.is_admin:
+        return jsonify({"error": "You are not authorized to approve or disapprove questions"}), 403
+
     question = Question.query.get(id)
     if not question:
         return jsonify({"error": "Question not found"}), 404
 
     data = request.get_json()
-    title = data.get('title', question.title)
-    body = data.get('body', question.body)
-    tags = data.get('tags', question.tags)
+    is_approved = data.get('is_approved', question.is_approved)
 
-    question.title = title
-    question.body = body
-    question.tags = tags
-    question.is_approved = data.get('is_approved', question.is_approved)
-    
+    if is_approved:
+        question.is_approved = True
+        db.session.commit()
+        return jsonify({"success": "Question approved!"}), 200
+    else:
+        question.is_approved = False
+        db.session.commit()
+        return jsonify({"success": "Question dissapproved!"}), 200
 
-    db.session.commit()
-    return jsonify({"success": "Question updated successfully"}), 200
 
 
 # delete a question
 @question_bp.route('/questions/<int:id>', methods=['DELETE'])
+@jwt_required()
 def delete_question(id):
+    current_user_id = get_jwt_identity()
     question = Question.query.get(id)
     if not question:
         return jsonify({"message": "Question not found"}), 404
+    
+    if question.user.id != current_user_id:
+        return jsonify({"error": "You are not authorized to delete this question"}), 403
 
     db.session.delete(question)
     db.session.commit()

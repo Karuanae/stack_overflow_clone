@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint
 from models import db, User, Question, Answer, Vote
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 vote_bp = Blueprint("vote_bp", __name__)
 
@@ -7,10 +8,11 @@ vote_bp = Blueprint("vote_bp", __name__)
 # QUESTION VOTE
 # Create a new vote
 @vote_bp.route('/question/vote', methods=['POST'])
+@jwt_required()
 def create_question_vote():
     data = request.get_json()
 
-    user_id = data.get('user_id')
+    user_id = get_jwt_identity()
     question_id = data.get('question_id')
     value = data.get('value')
 
@@ -59,10 +61,11 @@ def get_votes_for_question(question_id):
 # ANSWER VOTE
 # Create a new vote for answer
 @vote_bp.route('/answer/vote', methods=['POST'])
+@jwt_required()
 def create_answer_vote():
     data = request.get_json()
 
-    user_id = data.get('user_id')
+    user_id = get_jwt_identity()
     answer_id = data.get('answer_id')
     value = data.get('value')
 
