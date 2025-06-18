@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
+
 
 const Home = () => {
 
-  const {currentUser} = useContext(UserContext);
+  
 
 
   return (
@@ -11,7 +10,7 @@ const Home = () => {
       <div className="w-full flex items-center">
         <div className="w-1/2 gtext-center">
           <h1 className="text-8xl font-bold text-gray-800">
-            Welcome {currentUser} to 
+            Welcome to 
           </h1>
           <h3 className='text-4xl font-semibold'>
             StackOverflow Clone

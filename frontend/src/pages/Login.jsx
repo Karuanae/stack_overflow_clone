@@ -5,12 +5,13 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-    const {currentUser} = useContext(UserContext);
-  
+  const {login_user} = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
+
+    // using login_user function from UserContext
+    login_user(email, password);
     console.log('Logging in with:', email, password);
   };
 
@@ -20,19 +21,19 @@ const Login = () => {
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
           
           <div className="mt-12 flex flex-col items-center">
-            <h1 className="text-2xl xl:text-3xl font-extrabold">Login {currentUser}</h1>
+            <h1 className="text-2xl xl:text-3xl font-extrabold">Login </h1>
 
             <div className="w-full flex-1 mt-8">
               <form onSubmit={handleSubmit}>
                 <div className="mx-auto max-w-xs">
-                  <input
+                  <input required
                     type="email"
                     className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <input
+                  <input required
                     type="password"
                     className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
                     placeholder="Password"

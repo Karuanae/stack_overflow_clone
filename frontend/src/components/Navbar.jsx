@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const Navbar = () => {
+
+  const {currentUser} = useContext(UserContext);
+
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="container flex flex-wrap items-center justify-between mx-auto px-4 py-8">
@@ -95,6 +99,15 @@ const Navbar = () => {
                 Register
               </Link>
             </li>
+
+            <li>
+              <button
+                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-sky-700 md:p-0 dark:text-white md:dark:hover:text-sky-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+              >
+                {currentUser && currentUser.username}
+              </button>
+            </li>
+
             <li>
               <button
                 className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-sky-700 md:p-0 dark:text-white md:dark:hover:text-sky-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"

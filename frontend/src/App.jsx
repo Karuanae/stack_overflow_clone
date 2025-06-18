@@ -18,6 +18,8 @@ function App() {
 
     <UserProvider>
       <QuestionProvider>
+        {/* <AnswerProvider> */}
+        {/* <VoteProvider> */}
 
         <Routes>
           <Route path='/' element={<Layout />} >
@@ -32,7 +34,8 @@ function App() {
             <Route path="/register" element={<Register />} />
           </Route>
         </Routes>
-
+        {/* </VoteProvider> */}
+        {/* </AnswerProvider> */}
       </QuestionProvider>
     </UserProvider>
 

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { use, useContext, useState } from 'react';
+import { UserContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -6,10 +8,24 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
 
+  const {register_user} = useContext(UserContext);
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log('Registering with:', username, email, password, repeatPassword);
+
+    if(password !== repeatPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+    else if(password.length < 4) {
+      toast.error("Password must be at least 4 characters long!");
+      return;
+    }
+    else{
+          register_user(username, email, password);
+           setEmail('');setPassword('');setRepeatPassword('');setUsername('');
+    }
+
+
   };
 
   return (
