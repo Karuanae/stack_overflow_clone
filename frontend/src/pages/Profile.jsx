@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
   const [username, setUsername] = useState('john_doe');
@@ -6,6 +7,13 @@ const Profile = () => {
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+
+  // if the user is not logged in, show a message
+  const {currentUser} = useContext(UserContext);
+  if (!currentUser) {
+    return <div className="text-center mt-20">Please log in to view your profile.</div>;
+  }
 
   const handleProfileUpdate = (e) => {
     e.preventDefault();
@@ -29,8 +37,8 @@ const Profile = () => {
             alt="Profile"
             className="rounded-full w-32 h-32 mb-4"
           />
-          <h2 className="text-2xl font-semibold text-gray-800">{username}</h2>
-          <p className="text-sm text-gray-600">{email}</p>
+          <h2 className="text-2xl font-semibold text-gray-800">{currentUser && currentUser.username}</h2>
+          <p className="text-sm text-gray-600">{currentUser && currentUser.email}</p>
         </div>
 
         {/* Buttons for Admin/User and Block User */}

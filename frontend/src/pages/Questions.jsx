@@ -1,32 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { QuestionContext } from '../context/QuestionContext';
 
-const sampleQuestions = [
-  { id: 1, title: 'What is React?', description: 'Can someone explain what React is and how it works?', votes: 5 },
-  { id: 2, title: 'How do I use useState?', description: 'I am trying to use useState hook but not sure how to do it correctly.', votes: 3 },
-  { id: 3, title: 'How to handle forms in React?', description: 'What is the best way to handle forms and validations in React?', votes: 7 },
-];
 
 const Questions = () => {
-  const [questions, setQuestions] = useState(sampleQuestions);
+  const {questions} = useContext(QuestionContext);
 
   // Handle upvote and downvote logic
   const handleVote = (id, type) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((question) =>
-        question.id === id
-          ? {
-              ...question,
-              votes: type === 'upvote' ? question.votes + 1 : question.votes - 1,
-            }
-          : question
-      )
-    );
+
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Questions (10)</h2>
+      <h2 className="text-2xl font-bold mb-4">Questions ({questions && questions.length})</h2>
       <ul>
         {questions.map((question) => (
           <li key={question.id} className="flex items-center mb-4 p-4 bg-gray-100 rounded-lg shadow-md">
@@ -52,7 +39,7 @@ const Questions = () => {
               <Link to={`/questions/${question.id}`} className="text-blue-600 hover:underline">
                 <h3 className="text-xl font-semibold">{question.title}</h3>
               </Link>
-              <p className="text-gray-600">{question.description}</p>
+              <p className="text-gray-600">{question.body}</p>
             </div>
           </li>
         ))}

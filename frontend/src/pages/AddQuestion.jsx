@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { UserContext } from '../context/UserContext';
+import { QuestionContext } from '../context/QuestionContext';
+import { toast } from 'react-toastify';
 
 const AddQuestion = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [tags, setTags] = useState('');
 
-  const handleSubmit = async (e) => {
+    const { add_question } = useContext(QuestionContext);
+  // if the user is not logged in, show a message
+    const {currentUser} = useContext(UserContext);
+    if (!currentUser) {
+      return <div className="text-center mt-20">Please log in to view your profile.</div>;
+    }
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+     
+    if(body.length < 20){
+      toast.error("Question body must be at least 20 characters long.");
+      return;
+    }
+    if(title.length < 5){
+      toast.error("Question title must be at least 5 characters long.");
+      return;
+    }
+    else{
+         // add the question using the context function
+        add_question(title, body, tags);
+        setTitle('');
+        setBody('');
+        setTags('');
+    }
+ 
+
+
 
  
   };
@@ -18,7 +47,7 @@ const AddQuestion = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-gray-600 font-medium">Title</label>
-          <input
+          <input required
             type="text"
             id="title"
             value={title}
@@ -30,7 +59,7 @@ const AddQuestion = () => {
 
         <div>
           <label htmlFor="body" className="block text-gray-600 font-medium">Body</label>
-          <textarea
+          <textarea required
             id="body"
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -42,7 +71,7 @@ const AddQuestion = () => {
 
         <div>
           <label htmlFor="tags" className="block text-gray-600 font-medium">Tags</label>
-          <input
+          <input required
             type="text"
             id="tags"
             value={tags}

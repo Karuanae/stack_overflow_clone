@@ -91,8 +91,26 @@ export const UserProvider = ({ children }) => {
 
     // ======= Function to logout a user ========
     function logout_user(){
-        console.log("Logging out user...");
-        
+        fetch("http://127.0.1:5000/logout", {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${auth_token}`,
+            }
+        }
+        )   
+        .then(response => response.json())
+        .then(res => {
+            if(res.success){
+                toast.success(res.success);
+                localStorage.removeItem("access_token");
+                setAuthToken(null);
+                setCurrentUser(null);
+                navigate("/login");
+            }
+            else{
+                toast.error("An error occurred while logging out!")
+            }
+        })     
     }
 
     // ======= get current user data =======
@@ -108,8 +126,8 @@ export const UserProvider = ({ children }) => {
             .then(response => response.json())
             .then(res => {
                 
-                if(res.error){
-                    toast.error("Error fetching current user: ", res.error);
+                if(res.msg){
+                    toast.error( res.msg);
                 }
                 else{
                     console.log("Current user responsexxx ", res);
@@ -124,6 +142,7 @@ export const UserProvider = ({ children }) => {
 
 
     const context_data={
+        auth_token,
         currentUser,
         register_user,
         login_user,
