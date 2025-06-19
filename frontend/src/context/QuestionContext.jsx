@@ -46,6 +46,38 @@ export const QuestionProvider = ({ children }) =>
     }
 
 
+    // Approve question by admin
+   function approve_question(id, is_approved){
+        toast.loading("Approve the question...");
+        fetch(`http://127.0.0.1:5000/questions/${id}/approve`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${auth_token}`
+                },
+                body: JSON.stringify({is_approved})
+            }
+        )
+        .then(response => response.json())
+        .then(res => {
+            if(res.error){
+                toast.dismiss();
+                toast.error(res.error);
+            }
+            else if(res.success){
+                toast.dismiss();
+                setOnchange(!onChange)
+                toast.success(res.success);
+            }
+            else{
+                toast.dismiss();
+                toast.error("An error occurred while approving the question.");
+            }
+        })
+    }
+
+    
+
 
     // fetch all questions from the API
     useEffect(() => {
@@ -87,8 +119,37 @@ export const QuestionProvider = ({ children }) =>
         })
     }
     
-                
 
+    // =========================Answers==================================
+                
+    // =====  to add a new answer ======
+    function add_answer(question_id, body){
+        toast.loading("Adding your answer...");
+        fetch("http://127.0.0.1:5000/answers", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${auth_token}`
+                },
+                body: JSON.stringify({question_id, body})
+            }
+        )
+        .then(response => response.json())
+        .then(res => {
+            if(res.error){
+                toast.dismiss();
+                toast.error(res.error);
+            }
+            else if(res.success){
+                toast.dismiss();
+                toast.success(res.success);
+            }
+            else{
+                toast.dismiss();
+                toast.error("An error occurred while adding the answer.");
+            }
+        })
+    }
 
  
 
@@ -99,7 +160,9 @@ export const QuestionProvider = ({ children }) =>
     const context_data={
       questions,
       add_question,
-        handleVote
+        handleVote,
+        add_answer,
+        approve_question
     }
 
     return(

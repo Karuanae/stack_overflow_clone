@@ -25,7 +25,7 @@ function App() {
           <Route path='/' element={<Layout />} >
             <Route index element={<Home />} />
             <Route path="/questions" element={<Questions />} />
-            <Route path="/questions/:id" element={<SingleQuestion />} />
+            <Route path="/questions/:quiz_id" element={<SingleQuestion />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/users" element={<Users />} />
             <Route path="/addquestion" element={<AddQuestion />} />

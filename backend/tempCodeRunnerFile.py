@@ -1,1 +1,1 @@
-return "<p>Hello, World!</p>"
+ print("Admin added  successfully.")

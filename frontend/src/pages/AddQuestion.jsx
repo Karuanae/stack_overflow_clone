@@ -11,9 +11,10 @@ const AddQuestion = () => {
     const { add_question } = useContext(QuestionContext);
   // if the user is not logged in, show a message
     const {currentUser} = useContext(UserContext);
-    if (!currentUser) {
-      return <div className="text-center mt-20">Please log in to add a question.</div>;
+    if (!currentUser || currentUser.is_admin ) {
+      return <div className="text-center mt-20">Please log in to add a question/unauthorized.</div>;
     }
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
