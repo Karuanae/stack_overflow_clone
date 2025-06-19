@@ -110,7 +110,77 @@ export const UserProvider = ({ children }) => {
             else{
                 toast.error("An error occurred while logging out!")
             }
-        })     
+        })   
+
+    }
+
+    // ======== Function to update user profile ========
+    function update_user_profile(username, email, password, newPassword)
+    {
+        toast.loading("Updating profile...");
+
+        fetch("http://127.0.0.1:5000/update_user", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${auth_token}`
+                },
+                body: JSON.stringify({username: username, email: email, password: password, newPassword: newPassword})
+            }
+        )
+        .then(res=>res.json())
+        .then(res => {
+            if(res.error){
+                toast.dismiss();
+                toast.error(res.error);
+            }
+            else if(res.success){
+                toast.dismiss();
+                toast.success(res.success);
+           
+            }
+            else{
+                toast.dismiss();
+                toast.error("An error occurred while updating the profile.");
+            }
+
+        }
+    )}
+
+    // delete user profile
+    function delete_profile(){
+        toast.loading("Deleting profile...");
+
+        fetch("http://127.0.0.1:5000/delete_user_profile", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${auth_token}`
+                }
+            }
+        )
+        .then(res=>res.json())
+        .then(res => {
+            if(res.error){
+                toast.dismiss();
+                toast.error(res.error);
+            }
+            else if(res.success){
+                toast.dismiss();
+                toast.success(res.success);
+
+                localStorage.removeItem("access_token");
+                setAuthToken(null);
+                setCurrentUser(null);
+                navigate("/login");
+            }
+            else{
+                toast.dismiss();
+                toast.error("An error occurred while deleting the profile.");
+            }
+
+        })
+
     }
 
     // ======= get current user data =======
@@ -143,10 +213,12 @@ export const UserProvider = ({ children }) => {
 
     const context_data={
         auth_token,
+        delete_profile,
         currentUser,
         register_user,
         login_user,
-        logout_user
+        logout_user,
+        update_user_profile
     }
 
     return(

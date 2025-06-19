@@ -12,7 +12,7 @@ const AddQuestion = () => {
   // if the user is not logged in, show a message
     const {currentUser} = useContext(UserContext);
     if (!currentUser) {
-      return <div className="text-center mt-20">Please log in to view your profile.</div>;
+      return <div className="text-center mt-20">Please log in to add a question.</div>;
     }
 
   const handleSubmit = (e) => {

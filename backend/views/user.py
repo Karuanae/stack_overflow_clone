@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, Blueprint
-from models import db, User
-from werkzeug.security import generate_password_hash
+from models import db, User, Question, Answer, Vote
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import jwt_required, get_jwt_identity
 # Importing Flask-Mail for email functionalities
 from flask_mail import Message
 from app import app, mail
@@ -52,9 +53,11 @@ def create_user():
 
 
 # update user - block/unblock user, change username, email, admin status
-@user_bp.route("/users/<user_id>", methods=["PATCH"])
-def update_user(user_id):  
-    user = User.query.get(user_id)
+@user_bp.route("/update_user", methods=["PATCH"])
+@jwt_required()
+def update_user():  
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -62,10 +65,17 @@ def update_user(user_id):
     data = request.get_json()
   
     username = data.get("username",user.username)
+    newPassword = data.get("newPassword")
+    password = data.get("password")
     email = data.get("email", user.email)
     is_admin = data.get("is_admin", user.is_admin)
     is_blocked = data.get("is_blocked", user.is_blocked)
 
+    if newPassword and password:
+        if check_password_hash(user.password, password):
+            user.password = generate_password_hash(newPassword)
+        else:
+            return jsonify({"error": "Current password is incorrect"}), 400
     
     user.username = username
     user.email = email
@@ -126,14 +136,34 @@ def fetch_all_users():
         
     return jsonify(user_list), 200
 
-# delete user
-@user_bp.route("/users/<user_id>", methods=["DELETE"])
-def delete_user(user_id):
-    user = User.query.get(user_id)
+# delete user profile
+@user_bp.route("/delete_user_profile", methods=["DELETE"])
+@jwt_required()
+def delete_user():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    #
 
     if not user:
         return jsonify({"error": "User not found"}), 404
 
+   
+
+    # if user had any questions, answers or votes, they should be deleted as well
+    questions = Question.query.filter_by(user_id=current_user_id).all()
+    for question in questions:
+        db.session.delete(question) 
+    answers = Answer.query.filter_by(user_id=current_user_id).all()
+    for answer in answers:
+        db.session.delete(answer)
+    votes = Vote.query.filter_by(user_id=current_user_id).all()
+    for vote in votes:
+        db.session.delete(vote)
+
+    db.session.commit()
+
+    # delete the user profile after deleting their questions, answers and votes
     db.session.delete(user)
     db.session.commit()
 

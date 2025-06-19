@@ -11,8 +11,7 @@ export const QuestionProvider = ({ children }) =>
     const navigate = useNavigate();
 
       const {auth_token} = useContext(UserContext);
-    
-    // State to hold question data
+      const [onChange, setOnchange] = useState(false);
 
     const [questions, setQuestions] = useState([]);
 
@@ -57,7 +56,39 @@ export const QuestionProvider = ({ children }) =>
             console.log("Fetched questions: ", data);
             
         })
-    }, []);
+    }, [onChange]);
+
+
+    // ============ upvote and downvote logic ==============
+    const handleVote = (question_id, value) => {
+       fetch("http://127.0.0.1:5000/question/vote",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth_token}`
+        },
+        body: JSON.stringify({question_id, value})
+       })
+         .then(response => response.json())
+         .then(res => {
+            if(res.error){
+                toast.dismiss();
+                toast.error(res.error);
+            }
+            else if(res.success){
+                toast.dismiss();
+                setOnchange(!onChange); // trigger re-fetch of questions
+                toast.success(res.success);
+            }
+        })
+        .catch(error => {   
+            toast.dismiss();
+            toast.error("An error occurred while voting.");
+        })
+    }
+    
+                
+
 
  
 
@@ -67,7 +98,8 @@ export const QuestionProvider = ({ children }) =>
 
     const context_data={
       questions,
-      add_question
+      add_question,
+        handleVote
     }
 
     return(

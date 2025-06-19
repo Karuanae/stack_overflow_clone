@@ -1,16 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
-  const [username, setUsername] = useState('john_doe');
-  const [email, setEmail] = useState('john.doe@example.com');
+    const {currentUser, update_user_profile, delete_profile} = useContext(UserContext);
+
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // set initial values for username and email from currentUser
+  useEffect(() => {
+    if (currentUser) {
+      setUsername(currentUser.username);
+      setEmail(currentUser.email);
+    }
+  }, [currentUser]);
 
   // if the user is not logged in, show a message
-  const {currentUser} = useContext(UserContext);
   if (!currentUser) {
     return <div className="text-center mt-20">Please log in to view your profile.</div>;
   }
@@ -18,15 +27,17 @@ const Profile = () => {
   const handleProfileUpdate = (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      alert('Passwords do not match!');
+      toast.error("New password and confirm password do not match.");
       return;
     }
-    console.log('Profile Updated:', { username, email, newPassword });
+    else{
+       update_user_profile(username, email, password, newPassword);
+        // setPassword('');
+        // setNewPassword('');
+        // setConfirmPassword('');
+    }
   };
 
-  const handleBlockUser = () => {
-    alert('User has been blocked!');
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center py-8">
@@ -43,16 +54,19 @@ const Profile = () => {
 
         {/* Buttons for Admin/User and Block User */}
         <div className="flex justify-center gap-3 mb-8">
-          <button
-            className="bg-blue-500 px-8 py-3 text-white rounded-lg hover:bg-blue-700 transition duration-300"
-          >
-            Admin
-          </button>
-          <button
-            className=" bg-green-500 px-8 py-3 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300"
-          >
-            User
-          </button>
+         { currentUser && currentUser.is_admin ?
+            <button
+              className="bg-blue-500 px-8 py-3 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+            >
+              Admin
+            </button>
+            :
+            <button
+              className=" bg-green-500 px-8 py-3 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300"
+            >
+              User
+            </button>
+        }
         </div>
 
         {/* profile update form */}
@@ -119,6 +133,17 @@ const Profile = () => {
             Update Profile
           </button>
         </form>
+
+
+        <h3 className='text-lg font-semibold text-gray-800 mt-8 mb-4'>DANGER ZONE! Delete Profile</h3>
+        <button onClick={delete_profile}
+            type="submit"
+            className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-700 transition duration-300"
+          >
+            DELETE YOUR ACCOUNT
+        </button>
+
+
       </div>
     </div>
   );

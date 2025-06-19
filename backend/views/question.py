@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Blueprint
-from models import db, User, Question
+from models import db, User, Question, Vote
 from flask_jwt_extended import jwt_required, get_jwt_identity
 question_bp = Blueprint("question_bp", __name__)
 
@@ -54,7 +54,9 @@ def get_questions():
                 "id": question.user.id,
                 "username": question.user.username,
                 "email": question.user.email
-            }
+            },
+            # fetch questions' votes
+            "votes": len(Vote.query.filter_by(value=1, question_id=question.id).all()) - len(Vote.query.filter_by(value=-1, question_id=question.id).all())
         }
         questions_list.append(question_data)
 
@@ -78,7 +80,20 @@ def get_question(id):
             "id": question.user.id,
             "username": question.user.username,
             "email": question.user.email
-        }
+        },
+        "answers":[
+        {
+            "id": answer.id,
+            "body": answer.body,
+            "created_at": answer.created_at,
+            "user": {
+                "id": answer.user.id,
+                "username": answer.user.username,
+                "email": answer.user.email
+            }
+        } for answer in question.answers
+    ]
+
     }), 200
 
 # update a question 

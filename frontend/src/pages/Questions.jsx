@@ -1,36 +1,34 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionContext } from '../context/QuestionContext';
+import { IoMdArrowDropdownCircle, IoMdArrowDropupCircle } from "react-icons/io";
 
 
 const Questions = () => {
-  const {questions} = useContext(QuestionContext);
+  const {questions, handleVote} = useContext(QuestionContext);
 
-  // Handle upvote and downvote logic
-  const handleVote = (id, type) => {
 
-  };
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Questions ({questions && questions.length})</h2>
       <ul>
-        {questions.map((question) => (
+        {questions && questions.map((question) => (
           <li key={question.id} className="flex items-center mb-4 p-4 bg-gray-100 rounded-lg shadow-md">
             {/* votes col */}
             <div className="flex flex-col items-center justify-center mr-4 min-w-20">
               <button
-                onClick={() => handleVote(question.id, 'upvote')}
-                className="bg-green-500 text-white py-1 px-2 rounded-full mb-2 hover:bg-green-600"
+                onClick={() => handleVote(question.id, 1)}
+                className="hover:text-gray-700 py-1 px-2 rounded-full mt-2 "
               >
-                Upvote
+                <IoMdArrowDropupCircle size={40} />
               </button>
               <span className="text-lg font-bold">{question.votes}</span>
               <button
-                onClick={() => handleVote(question.id, 'downvote')}
-                className="bg-red-500 text-white py-1 px-2 rounded-full mt-2 hover:bg-red-600"
+                onClick={() => handleVote(question.id, -1)}
+                className="hover:text-gray-700 py-1 px-2 rounded-full mt-2 "
               >
-                Downvote
+               <IoMdArrowDropdownCircle size={40} />
               </button>
             </div>
 
