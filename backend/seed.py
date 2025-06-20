@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash
 def seed():
     with app.app_context():
         username="xxxw"
+        
         email="xxwx@gmail.com"
         password="12345678"
 
