@@ -58,8 +58,8 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
 
 
 
