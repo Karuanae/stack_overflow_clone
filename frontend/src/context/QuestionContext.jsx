@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { UserContext } from './UserContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
+import {api_url} from "../config.json"
 
 export const QuestionContext = createContext();
 
@@ -18,7 +18,7 @@ export const QuestionProvider = ({ children }) =>
     // =====  to add a new question ======
     function add_question(title, body, tags){
         toast.loading("Adding your question...");
-        fetch("http://127.0.0.1:5000/questions", {
+        fetch(`${api_url}/questions`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export const QuestionProvider = ({ children }) =>
     // Approve question by admin
    function approve_question(id, is_approved){
         toast.loading("Approve the question...");
-        fetch(`http://127.0.0.1:5000/questions/${id}/approve`, {
+        fetch(`${api_url}/questions/${id}/approve`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export const QuestionProvider = ({ children }) =>
 
     // fetch all questions from the API
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/questions")
+        fetch(`${api_url}/questions`)
         .then(response => response.json())
         .then(data=>{
             setQuestions(data);
@@ -93,7 +93,7 @@ export const QuestionProvider = ({ children }) =>
 
     // ============ upvote and downvote logic ==============
     const handleVote = (question_id, value) => {
-       fetch("http://127.0.0.1:5000/question/vote",{
+       fetch(`${api_url}/question/vote`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export const QuestionProvider = ({ children }) =>
     // =====  to add a new answer ======
     function add_answer(question_id, body){
         toast.loading("Adding your answer...");
-        fetch("http://127.0.0.1:5000/answers", {
+        fetch(`${api_url}/answers`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

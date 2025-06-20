@@ -14,6 +14,10 @@ const Questions = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Questions ({questions && questions.length})</h2>
+     {
+      questions && questions.length < 1 ?
+      <p>No question at the moment</p>
+     :
       <ul>
         {/* An admin can see all questions */}
         {
@@ -99,6 +103,7 @@ const Questions = () => {
 
 
       </ul>
+}
     </div>
   );
 };

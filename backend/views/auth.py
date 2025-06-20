@@ -20,8 +20,8 @@ def login():
         return jsonify({"error": "email and password are required to login"}), 400
      
     user = User.query.filter_by(email=email).first()
-
-    if user.is_blocked:
+    print("xxxx ",user)
+    if user and user.is_blocked:
         return jsonify({"error":"You have been blocked! Contact Admin!"}), 401
 
     if user and check_password_hash(user.password, password):

@@ -5,10 +5,10 @@ from werkzeug.security import generate_password_hash
 
 def seed():
     with app.app_context():
-        username="xxxw"
+        username="admin"
         
-        email="xxwx@gmail.com"
-        password="12345678"
+        email="admin@gmail.com"
+        password="admin"
 
         username_exists = User.query.filter_by(username=username).first()
         if username_exists:

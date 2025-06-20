@@ -1,11 +1,14 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import {api_url} from "../config.json"
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
 
+
+    
     const navigate = useNavigate();
    
     const [currentUser, setCurrentUser] = useState(null);
@@ -22,7 +25,7 @@ export const UserProvider = ({ children }) => {
     {
         toast.loading("Registering user...");
 
-        fetch("http://127.0.0.1:5000/users", {
+        fetch(`${api_url}/users`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -55,7 +58,7 @@ export const UserProvider = ({ children }) => {
     function login_user(email, password){
         toast.loading("Logging you in...");
 
-        fetch("http://127.0.0.1:5000/login", {
+        fetch(`${api_url}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -91,7 +94,7 @@ export const UserProvider = ({ children }) => {
 
     // ======= Function to logout a user ========
     function logout_user(){
-        fetch("http://127.0.1:5000/logout", {
+        fetch(`${api_url}/logout`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${auth_token}`,
@@ -119,7 +122,7 @@ export const UserProvider = ({ children }) => {
     {
         toast.loading("Updating profile...");
 
-        fetch("http://127.0.0.1:5000/update_user", {
+        fetch(`${api_url}/update_user`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -151,7 +154,7 @@ export const UserProvider = ({ children }) => {
     function delete_profile(){
         toast.loading("Deleting profile...");
 
-        fetch("http://127.0.0.1:5000/delete_user_profile", {
+        fetch(`${api_url}/delete_user_profile`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -186,7 +189,7 @@ export const UserProvider = ({ children }) => {
     // ======= get current user data =======
     useEffect(() => {
         if(auth_token){
-             fetch("http://127.0.0.1:5000/current_user",
+             fetch(`${api_url}/current_user`,
             {
                 method: "GET",
                 headers: {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { QuestionContext } from '../context/QuestionContext';
+import {api_url} from "../config.json"
 
 const SingleQuestion = () => {
   const { quiz_id } = useParams();
@@ -14,7 +15,7 @@ const SingleQuestion = () => {
   const {add_answer} = useContext(QuestionContext)
 
   useEffect(()=>{
-        fetch(`http://127.0.0.1:5000/questions/${quiz_id}`)
+        fetch(`${api_url}/questions/${quiz_id}`)
         .then(response => response.json())
         .then(data=>{
             setQuestion(data);
