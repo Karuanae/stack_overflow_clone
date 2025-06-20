@@ -47,9 +47,11 @@ const Questions = () => {
 
               <div className='flex gap-4'>
                 { question.is_approved?                
-                <button onClick={()=> approve_question(question.id, false)}>Disapprove</button>
+                <button onClick={()=> approve_question(question.id, false)} className='bg-red-600 px-2 py-1 text-white'>
+                  Disapprove</button>
                    :
-                <button onClick={()=> approve_question(question.id, true)}>Approve</button>
+                <button onClick={()=> approve_question(question.id, true)} className='bg-green-600 px-2 py-1 text-white'>
+                  Approve</button>
                 }
               </div>
             </div>
