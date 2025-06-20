@@ -85,6 +85,7 @@ export const QuestionProvider = ({ children }) =>
         .then(response => response.json())
         .then(data=>{
             setQuestions(data);
+            
             console.log("Fetched questions: ", data);
             
         })
